@@ -28,9 +28,10 @@ function showStatus(message) {
 function themeColors() {
   const s = getComputedStyle(document.documentElement);
   return {
-    down: s.getPropertyValue("--down").trim() || "#d64545",
+    // 日本式: 値上がり(プラス)=赤 / 値下がり(マイナス)=緑
+    gain: s.getPropertyValue("--gain").trim() || "#d64545",
     neutral: s.getPropertyValue("--neutral").trim() || "#d9d4c8",
-    up: s.getPropertyValue("--up").trim() || "#2f9e6b",
+    loss: s.getPropertyValue("--loss").trim() || "#2f9e6b",
   };
 }
 
@@ -39,7 +40,7 @@ function makeColorScale() {
   return d3
     .scaleLinear()
     .domain([-COLOR_DOMAIN, 0, COLOR_DOMAIN])
-    .range([c.down, c.neutral, c.up])
+    .range([c.loss, c.neutral, c.gain])
     .clamp(true);
 }
 

@@ -9,8 +9,9 @@
   --tile-stroke: rgba(255, 255, 255, 0.55);
   --sector-label: #6b645a;
   --neutral: #d9d4c8;
-  --down: #d64545;
-  --up: #2f9e6b;
+  /* 日本式: 値上がり=赤 / 値下がり=緑 */
+  --gain: #d64545;
+  --loss: #2f9e6b;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -25,8 +26,8 @@
     --tile-stroke: rgba(0, 0, 0, 0.45);
     --sector-label: #a89f92;
     --neutral: #4a453d;
-    --down: #e0605f;
-    --up: #46b483;
+    --gain: #e0605f;
+    --loss: #46b483;
   }
 }
 
@@ -149,7 +150,7 @@ main { margin-top: 1rem; }
   height: 0.7rem;
   border-radius: 999px;
   background: linear-gradient(to right,
-    var(--down) 0%, var(--neutral) 50%, var(--up) 100%);
+    var(--loss) 0%, var(--neutral) 50%, var(--gain) 100%);
 }
 .legend-scale { width: 100%; color: var(--text-sub); opacity: 0.8; }
 
@@ -176,5 +177,5 @@ footer p + p { margin-top: 0.4rem; }
   max-width: 15rem;
 }
 .tooltip strong { font-size: 0.9rem; }
-.tooltip .chg-up { color: var(--up); font-weight: 700; }
-.tooltip .chg-down { color: var(--down); font-weight: 700; }
+.tooltip .chg-up { color: var(--gain); font-weight: 700; }
+.tooltip .chg-down { color: var(--loss); font-weight: 700; }
