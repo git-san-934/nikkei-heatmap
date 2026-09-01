@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>日経平均225 ヒートマップ</title>
+  <meta name="description" content="日経平均株価の採用225銘柄の値動きを、業種ごとの色分けタイルで一覧できます。" />
+  <meta name="theme-color" content="#f7f5f0" />
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <header>
+    <div class="head-row">
+      <h1>日経平均225 ヒートマップ</h1>
+      <a class="portal-link" href="https://git-san-934.github.io/portal/">アプリ一覧へ</a>
+    </div>
+    <p class="meta">
+      <span id="updated">読み込み中…</span>
+      <span class="sep">／</span>
+      <span>株価は約15〜20分遅れ</span>
+    </p>
+    <div class="controls" role="group" aria-label="表示期間の切り替え">
+      <button type="button" data-metric="chg_1d" class="active">1日</button>
+      <button type="button" data-metric="chg_1w">1週間</button>
+      <button type="button" data-metric="chg_1m">1ヶ月</button>
+    </div>
+  </header>
+
+  <main>
+    <div id="chart" aria-label="日経平均225銘柄のヒートマップ"></div>
+    <div id="status" class="status" hidden></div>
+
+    <div class="legend">
+      <span class="legend-label">値下がり</span>
+      <span class="legend-bar" aria-hidden="true"></span>
+      <span class="legend-label">値上がり</span>
+      <span class="legend-scale" id="legend-scale"></span>
+    </div>
+  </main>
+
+  <footer>
+    <p>
+      タイルの大きさ＝会社の規模（時価総額の概算）、色＝選んだ期間の騰落率。
+    </p>
+    <p>
+      データ元: Yahoo Finance（非公式・無保証）。銘柄名と業種は日本取引所グループの公表データより。
+      本ページは情報提供のみを目的とし、投資勧誘ではありません。投資判断はご自身の責任で行ってください。
+    </p>
+  </footer>
+
+  <div id="tooltip" class="tooltip" hidden></div>
+
+  <script src="assets/d3.v7.min.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>
