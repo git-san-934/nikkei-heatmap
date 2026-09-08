@@ -23,7 +23,7 @@ GitHub Pages（main ブランチをそのまま配信）
 |---|---|
 | `index.html`, `assets/` | 画面（HTML / CSS / JavaScript / d3.js 同梱） |
 | `data/constituents.json` | 225銘柄の証券コード・社名・33業種区分（固定。JPX公表データ由来） |
-| `data/heatmap.json` | 最新の株価・騰落率・時価総額（Actions が自動更新） |
+| `data/heatmap.json` | 最新の株価・騰落率・時価総額と日経平均株価（Actions が自動更新） |
 | `scripts/fetch_prices.py` | 株価取得スクリプト |
 | `.github/workflows/update-data.yml` | 定期実行の設定 |
 

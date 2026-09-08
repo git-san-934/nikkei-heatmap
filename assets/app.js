@@ -100,6 +100,34 @@ async function loadData() {
   });
 
   updatedEl.textContent = formatUpdated(heatmap.updated_at);
+  renderIndexQuote(heatmap.nikkei225);
+}
+
+// タイトル横の「日経平均株価・前日比（円）・前日比（％）」を描画する。
+function renderIndexQuote(idx) {
+  const wrapEl = document.getElementById("index-quote");
+  if (!idx || idx.price === null || idx.price === undefined) {
+    wrapEl.hidden = true;
+    return;
+  }
+
+  const num = (v, digits) =>
+    v.toLocaleString("ja-JP", {
+      minimumFractionDigits: digits,
+      maximumFractionDigits: digits,
+    });
+
+  const yen = idx.chg_1d_yen ?? 0;
+  const pct = idx.chg_1d_pct ?? 0;
+  const sign = yen > 0 ? "+" : "";
+  const dir = yen > 0 ? "up" : yen < 0 ? "down" : "flat";
+
+  document.getElementById("idx-price").textContent = num(idx.price, 2);
+  const changeEl = document.getElementById("idx-change");
+  changeEl.textContent = `${sign}${num(yen, 2)}円（${sign}${num(pct, 2)}%）`;
+  changeEl.className = "idx-change " + dir;
+
+  wrapEl.hidden = false;
 }
 
 function buildHierarchy(width, height) {

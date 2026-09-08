@@ -44,6 +44,35 @@ def close_series(frame: pd.DataFrame, symbol: str) -> pd.Series | None:
     return series if not series.empty else None
 
 
+def fetch_nikkei_index() -> dict | None:
+    """日経平均株価（指数 ^N225）の最新値と前日比を取得する。"""
+    try:
+        frame = yf.download(
+            "^N225",
+            period="1mo",
+            interval="1d",
+            auto_adjust=False,
+            progress=False,
+        )
+        close = frame["Close"]
+        if hasattr(close, "columns"):  # 列が MultiIndex のとき
+            close = close.iloc[:, 0]
+        close = close.dropna()
+    except Exception:
+        return None
+
+    if len(close) < 2:
+        return None
+
+    latest = float(close.iloc[-1])
+    prev = float(close.iloc[-2])
+    return {
+        "price": round(latest, 2),
+        "chg_1d_yen": round(latest - prev, 2),
+        "chg_1d_pct": round((latest / prev - 1.0) * 100.0, 2),
+    }
+
+
 def fetch_market_caps(symbols: list[str], last_prices: dict[str, float]) -> dict[str, float]:
     """発行株数 × 最新終値 で時価総額を概算する（取得できない銘柄は入れない）。"""
     caps: dict[str, float] = {}
@@ -88,6 +117,10 @@ def main() -> None:
     caps = fetch_market_caps(symbols, last_prices)
     print(f"時価総額を計算できた銘柄: {len(caps)} / {len(symbols)}")
 
+    print("日経平均株価（指数）を取得します...")
+    nikkei = fetch_nikkei_index()
+    print("日経平均株価: " + ("取得成功" if nikkei else "取得失敗"))
+
     items = []
     for c in constituents:
         symbol = to_symbol(c["code"])
@@ -124,6 +157,7 @@ def main() -> None:
     payload = {
         "updated_at": datetime.now(JST).isoformat(timespec="seconds"),
         "source": "Yahoo Finance (yfinance)",
+        "nikkei225": nikkei,
         "items": items,
     }
     OUTPUT.write_text(

@@ -29,6 +29,10 @@ graph TD
 |---|---|---|
 | updated_at | string | 生成時刻（ISO8601, JST） |
 | source | string | データ元表記 |
+| nikkei225 | object \| null | 日経平均株価（指数 ^N225）。取得失敗時は null |
+| nikkei225.price | number | 最新値（円） |
+| nikkei225.chg_1d_yen | number | 前日比（円） |
+| nikkei225.chg_1d_pct | number | 前日比（％） |
 | items[] | array | 銘柄ごとの価格情報 |
 | items[].code | string | 証券コード（constituents と結合するキー） |
 | items[].price | number \| null | 最新終値（円） |
@@ -63,7 +67,8 @@ graph LR
 2. `yfinance.download()` で全銘柄の日足（3ヶ月）を一括取得。
 3. 各銘柄の最新／前日／5営業日前／21営業日前の終値から騰落率を計算。
 4. 銘柄ごとに `fast_info["shares"]` を取得し、時価総額 ＝ 株数 × 最新終値。
-5. heatmap.json を UTF-8 で書き出す。取得失敗銘柄は price=null で出力し処理は継続。
+5. 日経平均株価（指数 `^N225`）の最新値と前日比（円・％）を取得。
+6. heatmap.json を UTF-8 で書き出す。取得失敗銘柄は price=null で出力し処理は継続。
 
 ## エラー時の振る舞い
 - 一部銘柄の株価取得失敗 → その銘柄のみ null。タイルは灰色。
