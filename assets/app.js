@@ -13,6 +13,9 @@ const statusEl = document.getElementById("status");
 const updatedEl = document.getElementById("updated");
 const tooltipEl = document.getElementById("tooltip");
 const legendScaleEl = document.getElementById("legend-scale");
+const refreshBtn = document.getElementById("refresh-btn");
+const refreshIconEl = refreshBtn.querySelector(".refresh-icon");
+const refreshErrorEl = document.getElementById("refresh-error");
 
 const METRIC_LABEL = {
   chg_1d: "前日比",
@@ -74,11 +77,11 @@ function formatUpdated(iso) {
 
 async function loadData() {
   const [constituents, heatmap] = await Promise.all([
-    fetch("data/constituents.json").then((r) => {
+    fetch("data/constituents.json", { cache: "no-store" }).then((r) => {
       if (!r.ok) throw new Error("constituents.json");
       return r.json();
     }),
-    fetch("data/heatmap.json").then((r) => {
+    fetch("data/heatmap.json", { cache: "no-store" }).then((r) => {
       if (!r.ok) throw new Error("heatmap.json");
       return r.json();
     }),
@@ -264,6 +267,36 @@ function hideTooltip() {
   tooltipEl.hidden = true;
 }
 
+function setRefreshing(isRefreshing) {
+  refreshBtn.disabled = isRefreshing;
+  refreshIconEl.classList.toggle("spinning", isRefreshing);
+  refreshBtn.lastChild.textContent = isRefreshing ? "更新中…" : "更新";
+}
+
+function showRefreshError(message) {
+  refreshErrorEl.textContent = message;
+  refreshErrorEl.hidden = false;
+}
+
+function hideRefreshError() {
+  refreshErrorEl.hidden = true;
+}
+
+async function refresh() {
+  if (refreshBtn.disabled) return;
+  setRefreshing(true);
+  hideRefreshError();
+  try {
+    await loadData();
+    render();
+  } catch (err) {
+    console.error(err);
+    showRefreshError("更新に失敗しました。時間をおいて再試行してください。");
+  } finally {
+    setRefreshing(false);
+  }
+}
+
 function setupControls() {
   document.querySelectorAll(".controls button").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -274,6 +307,8 @@ function setupControls() {
       render();
     });
   });
+
+  refreshBtn.addEventListener("click", refresh);
 
   document.addEventListener("click", hideTooltip);
   window.addEventListener("scroll", hideTooltip, { passive: true });

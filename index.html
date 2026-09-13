@@ -22,9 +22,13 @@
       <a class="portal-link" href="https://git-san-934.github.io/portal/">アプリ一覧へ</a>
     </div>
     <p class="meta">
+      <button type="button" id="refresh-btn" class="refresh-btn">
+        <span class="refresh-icon" aria-hidden="true">↻</span>更新
+      </button>
       <span id="updated">読み込み中…</span>
       <span class="sep">／</span>
       <span>株価は約15〜20分遅れ</span>
+      <span id="refresh-error" class="refresh-error" role="status" hidden></span>
     </p>
     <div class="controls" role="group" aria-label="表示期間の切り替え">
       <button type="button" data-metric="chg_1d" class="active">1日</button>
