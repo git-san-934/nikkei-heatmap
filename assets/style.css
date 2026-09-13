@@ -128,10 +128,10 @@ h1 { font-size: 1.35rem; letter-spacing: 0.01em; }
   to { transform: rotate(360deg); }
 }
 
-.refresh-error {
-  color: var(--accent);
-  font-size: 0.8rem;
-}
+.refresh-message { font-size: 0.8rem; }
+.refresh-message.success { color: var(--text-sub); }
+.refresh-message.info { color: var(--text-sub); }
+.refresh-message.error { color: var(--accent); }
 
 .controls {
   display: flex;

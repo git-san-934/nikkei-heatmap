@@ -6,6 +6,7 @@ const COLOR_DOMAIN = 5;
 const state = {
   metric: "chg_1d", // chg_1d | chg_1w | chg_1m
   rows: [], // constituents と heatmap を結合したもの
+  lastUpdatedAt: null, // 直前に表示していた heatmap.updated_at
 };
 
 const chartEl = document.getElementById("chart");
@@ -15,7 +16,8 @@ const tooltipEl = document.getElementById("tooltip");
 const legendScaleEl = document.getElementById("legend-scale");
 const refreshBtn = document.getElementById("refresh-btn");
 const refreshIconEl = refreshBtn.querySelector(".refresh-icon");
-const refreshErrorEl = document.getElementById("refresh-error");
+const refreshMessageEl = document.getElementById("refresh-message");
+let refreshMessageTimer = null;
 
 const METRIC_LABEL = {
   chg_1d: "前日比",
@@ -102,8 +104,17 @@ async function loadData() {
     };
   });
 
+  const hasData = heatmap.items.some(
+    (it) => it.price !== null && it.price !== undefined
+  );
+  const isSameUpdate =
+    state.lastUpdatedAt !== null && state.lastUpdatedAt === heatmap.updated_at;
+  state.lastUpdatedAt = heatmap.updated_at;
+
   updatedEl.textContent = formatUpdated(heatmap.updated_at);
   renderIndexQuote(heatmap.nikkei225);
+
+  return { hasData, isSameUpdate };
 }
 
 // タイトル横の「日経平均株価・前日比（円）・前日比（％）」を描画する。
@@ -273,25 +284,36 @@ function setRefreshing(isRefreshing) {
   refreshBtn.lastChild.textContent = isRefreshing ? "更新中…" : "更新";
 }
 
-function showRefreshError(message) {
-  refreshErrorEl.textContent = message;
-  refreshErrorEl.hidden = false;
+function showRefreshMessage(text, kind) {
+  clearTimeout(refreshMessageTimer);
+  refreshMessageEl.textContent = text;
+  refreshMessageEl.className = "refresh-message " + kind;
+  refreshMessageEl.hidden = false;
+  refreshMessageTimer = setTimeout(() => {
+    refreshMessageEl.hidden = true;
+  }, 4000);
 }
 
-function hideRefreshError() {
-  refreshErrorEl.hidden = true;
+function hideRefreshMessage() {
+  clearTimeout(refreshMessageTimer);
+  refreshMessageEl.hidden = true;
 }
 
 async function refresh() {
   if (refreshBtn.disabled) return;
   setRefreshing(true);
-  hideRefreshError();
+  hideRefreshMessage();
   try {
-    await loadData();
+    const { hasData, isSameUpdate } = await loadData();
     render();
+    if (!hasData || isSameUpdate) {
+      showRefreshMessage("データがありません。", "info");
+    } else {
+      showRefreshMessage("更新しました。", "success");
+    }
   } catch (err) {
     console.error(err);
-    showRefreshError("更新に失敗しました。時間をおいて再試行してください。");
+    showRefreshMessage("更新できません。", "error");
   } finally {
     setRefreshing(false);
   }
