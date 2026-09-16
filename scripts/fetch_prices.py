@@ -89,6 +89,14 @@ def fetch_market_caps(symbols: list[str], last_prices: dict[str, float]) -> dict
     return caps
 
 
+def debug_try_topix_symbols() -> None:
+    """[一時デバッグ] TOPIX の正しい Yahoo Finance シンボルを特定するための試行。"""
+    candidates = ["998405.T", "^TOPX", "^TPX", "TOPIX", "1305.T", "1306.T"]
+    for sym in candidates:
+        result = fetch_index(sym)
+        print(f"DEBUG_TOPIX_CANDIDATE {sym}: {result}")
+
+
 def main() -> None:
     constituents = json.loads(CONSTITUENTS.read_text(encoding="utf-8"))
     symbols = [to_symbol(c["code"]) for c in constituents]
@@ -124,6 +132,7 @@ def main() -> None:
     print("TOPIX（指数）を取得します...")
     topix = fetch_index("^TOPX")
     print("TOPIX: " + ("取得成功" if topix else "取得失敗"))
+    debug_try_topix_symbols()
 
     items = []
     for c in constituents:
