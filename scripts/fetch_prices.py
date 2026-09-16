@@ -44,11 +44,11 @@ def close_series(frame: pd.DataFrame, symbol: str) -> pd.Series | None:
     return series if not series.empty else None
 
 
-def fetch_nikkei_index() -> dict | None:
-    """日経平均株価（指数 ^N225）の最新値と前日比を取得する。"""
+def fetch_index(symbol: str) -> dict | None:
+    """株価指数（例 ^N225 / ^TOPX）の最新値と前日比を取得する。"""
     try:
         frame = yf.download(
-            "^N225",
+            symbol,
             period="1mo",
             interval="1d",
             auto_adjust=False,
@@ -118,8 +118,12 @@ def main() -> None:
     print(f"時価総額を計算できた銘柄: {len(caps)} / {len(symbols)}")
 
     print("日経平均株価（指数）を取得します...")
-    nikkei = fetch_nikkei_index()
+    nikkei = fetch_index("^N225")
     print("日経平均株価: " + ("取得成功" if nikkei else "取得失敗"))
+
+    print("TOPIX（指数）を取得します...")
+    topix = fetch_index("^TOPX")
+    print("TOPIX: " + ("取得成功" if topix else "取得失敗"))
 
     items = []
     for c in constituents:
@@ -158,6 +162,7 @@ def main() -> None:
         "updated_at": datetime.now(JST).isoformat(timespec="seconds"),
         "source": "Yahoo Finance (yfinance)",
         "nikkei225": nikkei,
+        "topix": topix,
         "items": items,
     }
     OUTPUT.write_text(

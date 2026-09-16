@@ -112,14 +112,15 @@ async function loadData() {
   state.lastUpdatedAt = heatmap.updated_at;
 
   updatedEl.textContent = formatUpdated(heatmap.updated_at);
-  renderIndexQuote(heatmap.nikkei225);
+  renderIndexQuote(heatmap.nikkei225, "index-quote", "idx-price", "idx-change");
+  renderIndexQuote(heatmap.topix, "topix-quote", "topix-price", "topix-change");
 
   return { hasData, isSameUpdate };
 }
 
-// タイトル横の「日経平均株価・前日比（円）・前日比（％）」を描画する。
-function renderIndexQuote(idx) {
-  const wrapEl = document.getElementById("index-quote");
+// タイトル横の「指数・前日比（pt/円）・前日比（％）」を描画する（日経平均株価・TOPIX共通）。
+function renderIndexQuote(idx, wrapId, priceId, changeId) {
+  const wrapEl = document.getElementById(wrapId);
   if (!idx || idx.price === null || idx.price === undefined) {
     wrapEl.hidden = true;
     return;
@@ -136,8 +137,8 @@ function renderIndexQuote(idx) {
   const sign = yen > 0 ? "+" : "";
   const dir = yen > 0 ? "up" : yen < 0 ? "down" : "flat";
 
-  document.getElementById("idx-price").textContent = num(idx.price, 2);
-  const changeEl = document.getElementById("idx-change");
+  document.getElementById(priceId).textContent = num(idx.price, 2);
+  const changeEl = document.getElementById(changeId);
   changeEl.textContent = `${sign}${num(yen, 2)}円（${sign}${num(pct, 2)}%）`;
   changeEl.className = "idx-change " + dir;
 
