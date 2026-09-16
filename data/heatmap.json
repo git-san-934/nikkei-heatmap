@@ -1,12 +1,16 @@
 {
- "updated_at": "2026-09-16T18:06:33+09:00",
+ "updated_at": "2026-09-16T18:12:58+09:00",
  "source": "Yahoo Finance (yfinance)",
  "nikkei225": {
   "price": 63923.0,
   "chg_1d_yen": 438.9,
   "chg_1d_pct": 0.69
  },
- "topix": null,
+ "topix": {
+  "price": 423.9,
+  "chg_1d_yen": 2.6,
+  "chg_1d_pct": 0.62
+ },
  "items": [
   {
    "code": "9202",
