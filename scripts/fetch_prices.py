@@ -91,10 +91,32 @@ def fetch_market_caps(symbols: list[str], last_prices: dict[str, float]) -> dict
 
 def debug_try_topix_symbols() -> None:
     """[一時デバッグ] TOPIX の正しい Yahoo Finance シンボルを特定するための試行。"""
-    candidates = ["998405.T", "^TOPX", "^TPX", "TOPIX", "1305.T", "1306.T"]
-    for sym in candidates:
-        result = fetch_index(sym)
-        print(f"DEBUG_TOPIX_CANDIDATE {sym}: {result}")
+    import requests
+
+    for sym in ["^TOPX", "998407.T", "1475.T", "2557.T"]:
+        try:
+            t = yf.Ticker(sym)
+            h = t.history(period="5d")
+            print(f"DEBUG_TICKER_HISTORY {sym}: rows={len(h)} tail={h['Close'].tail(2).to_dict() if not h.empty else None}")
+        except Exception as e:
+            print(f"DEBUG_TICKER_HISTORY {sym}: ERROR {e}")
+
+    for sym in ["^tpx", "^spx"]:
+        try:
+            r = requests.get(f"https://stooq.com/q/d/l/?s={sym}&i=d", timeout=10)
+            print(f"DEBUG_STOOQ {sym}: status={r.status_code} body_head={r.text[:200]!r}")
+        except Exception as e:
+            print(f"DEBUG_STOOQ {sym}: ERROR {e}")
+
+    try:
+        r = requests.get(
+            "https://query1.finance.yahoo.com/v8/finance/chart/%5ETOPX",
+            headers={"User-Agent": "Mozilla/5.0"},
+            timeout=10,
+        )
+        print(f"DEBUG_YCHART ^TOPX: status={r.status_code} body_head={r.text[:300]!r}")
+    except Exception as e:
+        print(f"DEBUG_YCHART ^TOPX: ERROR {e}")
 
 
 def main() -> None:
