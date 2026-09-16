@@ -121,9 +121,11 @@ def main() -> None:
     nikkei = fetch_index("^N225")
     print("日経平均株価: " + ("取得成功" if nikkei else "取得失敗"))
 
-    print("TOPIX（指数）を取得します...")
-    topix = fetch_index("^TOPX")
-    print("TOPIX: " + ("取得成功" if topix else "取得失敗"))
+    # TOPIX指数そのものはYahoo Financeから取得できないため、
+    # 連動性の高いETF（NEXT FUNDS TOPIX ETF, 1306）の価格・前日比で代用する。
+    print("TOPIX連動ETF（1306）を取得します...")
+    topix = fetch_index("1306.T")
+    print("TOPIX連動ETF: " + ("取得成功" if topix else "取得失敗"))
 
     items = []
     for c in constituents:
