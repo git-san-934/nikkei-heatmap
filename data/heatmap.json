@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-09-22T21:11:10+09:00",
+ "updated_at": "2026-09-23T13:05:30+09:00",
  "source": "Yahoo Finance (yfinance)",
  "nikkei225": {
   "price": 65018.95,
@@ -759,7 +759,7 @@
   {
    "code": "2282",
    "price": 6078.0,
-   "market_cap": 564344482002.0,
+   "market_cap": 556438219602.0,
    "chg_1d": -3.4,
    "chg_1w": -2.71,
    "chg_1m": -5.24
