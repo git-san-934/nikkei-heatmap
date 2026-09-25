@@ -12,7 +12,7 @@ Webページです。サーバーは持たず、GitHub Pages だけで動きま�
 ## 仕組み
 
 ```
-GitHub Actions（平日9〜16時台に毎時）
+GitHub Actions（平日 9:30 / 10:30 / 11:45 / 13:00 / 14:00 / 15:00 / 16:00）
   └ scripts/fetch_prices.py … Yahoo Finance から225銘柄の株価を取得
        └ data/heatmap.json を更新して commit / push
 GitHub Pages（main ブランチをそのまま配信）
